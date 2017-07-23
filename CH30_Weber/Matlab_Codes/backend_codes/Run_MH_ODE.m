@@ -41,7 +41,7 @@ for ipart = 1:10
 end
 
 %% Perform the MH Search and Generate the Results 
-STR_ODE_MH = ['generated_results\MetHast_',num2str(Nm),'_ODE_Results_I',num2str(input_num),'.csv'];  
+STR_ODE_MH = ['generated_results/MetHast_',num2str(Nm),'_ODE_Results_I',num2str(input_num),'.csv'];  
 fid = fopen(STR_ODE_MH,'w');
 figure();
 for ipart = 1:Npart_ODE

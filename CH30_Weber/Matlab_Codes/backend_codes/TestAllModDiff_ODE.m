@@ -15,7 +15,7 @@ for i=1:size(All_Guesses,1)
     legend('Fitted Model','Actual Data', 'Location', 'SouthEast') % Adding legend
     drawnow % Draws plot immediately
     % Save the parameter results for each model and update each sweep
-    eval(sprintf('save generated_results\BestParams_%i_ODE.mat Model_Results_Parameters',size(All_Guesses,1)))
+    eval(sprintf('save generated_results/BestParams_%i_ODE.mat Model_Results_Parameters',size(All_Guesses,1)))
 end 
 end
 

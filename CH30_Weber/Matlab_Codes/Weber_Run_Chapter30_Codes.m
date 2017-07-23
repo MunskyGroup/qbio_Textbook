@@ -1,4 +1,4 @@
-%% Script to Run All Functions and Generate All Plots for Chapter 34: Gene Regulation Tutorial
+%% Script to Run All Functions and Generate All Plots for Chapter 30: Gene Regulation Model Tutorial
 
 % Lisa Weber: PhD Graduate Student, Colorado State University, Fort Collins, CO
 % This code runs all functions and produces all plots in the gene regulation
@@ -6,10 +6,7 @@
 % efficiency, but do adequately perform the tasks outlined.
 
 addpath(genpath('Matlab_Codes'));
-% path('backend_codes',path);
 
-
-% close all; clear all; clc
 %% Functions (and m-files) to be called throughout code
 % Functions for (Ordinary Differential Equation (ODE) Analysis:
 Type = 'ODE';  
@@ -196,22 +193,22 @@ for Nm = 1:4
 
     figure()
     for i=1:length(Par)-1
-            for j=i+1:length(Par)
-                    subplot(7,7,(i-1)*7+j-1)
-                    scatter(Rslts_ODE_I1(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I1(Nm).Par_Chain(floor(end/4):end,i),10); hold on 
-                    scatter(Rslts_ODE_I2(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I2(Nm).Par_Chain(floor(end/4):end,i),10);
-                    scatter(Rslts_ODE_I3(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I3(Nm).Par_Chain(floor(end/4):end,i),10);
-                    COL = 'b'; conf = 0.90; %For ellipse: color and confidence interval
-                    [~,XX_1,YY_1] = error_ellipse_fill(RSLTS_ODE_I1(j,i).COV,RSLTS_ODE_I1(j,i).MN,'style',COL,'conf',conf);
-                    COL = 'g'; conf = 0.90; %For ellipse: color and confidence interval
-                    [~,XX_2,YY_2] = error_ellipse_fill(RSLTS_ODE_I2(j,i).COV,RSLTS_ODE_I2(j,i).MN,'style',COL,'conf',conf);
-                    COL = 'r'; conf = 0.90; %For ellipse: color and confidence interval
-                    [~,XX_3,YY_3] = error_ellipse_fill(RSLTS_ODE_I3(j,i).COV,RSLTS_ODE_I3(j,i).MN,'style',COL,'conf',conf);
-                    plot(log10(abs(Parameters_True(ip2))),log10(abs(Parameters_True(ip1))),'o',...
-                            'markerfacecolor',[0.4,0.4,0.4],'MarkerEdgeColor',[0.3,0.3,0.3]);
-                    xlabel(sprintf('Par %i',j))
-                    ylabel(sprintf('Par %i',i))
-            end
+        for j=i+1:length(Par)
+            subplot(7,7,(i-1)*7+j-1)
+            scatter(Rslts_ODE_I1(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I1(Nm).Par_Chain(floor(end/4):end,i),10); hold on 
+            scatter(Rslts_ODE_I2(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I2(Nm).Par_Chain(floor(end/4):end,i),10);
+            scatter(Rslts_ODE_I3(Nm).Par_Chain(floor(end/4):end,j),Rslts_ODE_I3(Nm).Par_Chain(floor(end/4):end,i),10);
+            COL = 'b'; conf = 0.90; %For ellipse: color and confidence interval
+            [~,XX_1,YY_1] = error_ellipse_fill(RSLTS_ODE_I1(j,i).COV,RSLTS_ODE_I1(j,i).MN,'style',COL,'conf',conf);
+            COL = 'g'; conf = 0.90; %For ellipse: color and confidence interval
+            [~,XX_2,YY_2] = error_ellipse_fill(RSLTS_ODE_I2(j,i).COV,RSLTS_ODE_I2(j,i).MN,'style',COL,'conf',conf);
+            COL = 'r'; conf = 0.90; %For ellipse: color and confidence interval
+            [~,XX_3,YY_3] = error_ellipse_fill(RSLTS_ODE_I3(j,i).COV,RSLTS_ODE_I3(j,i).MN,'style',COL,'conf',conf);
+            plot(log10(abs(Parameters_True(ip2))),log10(abs(Parameters_True(ip1))),'o',...
+                    'markerfacecolor',[0.4,0.4,0.4],'MarkerEdgeColor',[0.3,0.3,0.3]);
+            xlabel(sprintf('Par %i',j))
+            ylabel(sprintf('Par %i',i))
+        end
     end
     suptitle('ODE Metropolis-Hastings Results: Scatter') %labels the set of scatter plots
 end
@@ -252,19 +249,19 @@ Par_set_1 = Rslts_ODE_I1(Nm).Par_Chain(I_min(1),:);
 Par_set_2 = Rslts_ODE_I1(Nm).Par_Chain(I_max(1),:); 
 
 %% Task 4: Run 1000 SSA trajectories using Input 1
-% Run many SSA trajectories using best (ODE) fit parameters, Par_set_1 (from ODE MH), and Par_set_2 (from ODE MH)
+% Run many SSA trajectories using ODE best fit parameters, Par_set_1 (from ODE MH), and Par_set_2 (from ODE MH)
 
 % For All SSA Runs
-Nm = 2; % For Model 2
+Nm = 2; Input = Input1; % Model 2 and Input 1
 Output_Times = linspace(0,100,100); % Reset output times
 Num_Runs = 1000;  % Number of SSA trajectories
-Parameters = Model_Results_Parameters(Nm,:); % Parameters from ODE best fit for specific model
+Parameters = Model_Results_Parameters_I1(Nm,:); % Parameters from ODE best fit for specific model
 
-% Run SSA with Best Fit Parameters (from ODE MH)
+% Multiple runs of many SSA trajectories with Best Fit Parameters (from ODE MH)
 for i=1:4
-    Parameters = Model_Results_Parameters(Nm,:); % Parameters from ODE best fit for specific model
-    ModFun = @(t,x)SSA_Mod(t,x,Parameters,Input1,Nm); % Function with stoichoimetries and propensity functions
-    eval(['m_RNA_Array_T',num2str(i),' = SSAHistfun(Num_Runs,ModFun,x0,Output_Times);']) % Run SSA
+    Parameters = Model_Results_Parameters_I1(Nm,:); % Parameters from ODE best fit for specific model
+    ModFun = @(t,x)SSA_Mod(t,x,Parameters,Input,Nm); % Function with stoichoimetries and propensity functions
+    eval(['m_RNA_Array_T',num2str(i),' = SSAHistfun(Num_Runs,ModFun,x0,Output_Times);']) % Run many SSA trajectories
     eval(['R_max_T',num2str(i),' = max(m_RNA_Array_T',num2str(i),');']); 
     eval(['R_max_T',num2str(i),'= max(R_max_T',num2str(i),');']) % Max RNA number from SSA
 end
@@ -285,8 +282,8 @@ end
 % Generate A matrix and run FSP to obtain mRNA distributions at every time
 % point for all three experiments (each with a different input signal)
 
-Nf = 10; % Number of time points for FSP MH Search
-Output_Times = linspace(0,100,Nf); % Time array
+Nf = 10; % Number of time points for FSP MH search
+Output_Times = linspace(0,100,Nf); % Output time array
 N = 80;  % First guess of the max number of RNA
 N_states = 3; % Number of states
 
@@ -335,7 +332,7 @@ end
 % signal).
 
 for Nm = 1:4   % Loop through all four models
-    % Load and save parameters from MH result files in workspace for mean and covariance calculations
+% Load and save parameters from MH result files in workspace for mean and covariance calculations
     for i = 1:length(Par)
         for input_num = 1:3   % Loop through all three input signals
             STR_FSP_MH = ['MetHast_',num2str(Nm),'_FSP_Results_I',num2str(input_num),'.csv'];  
@@ -347,8 +344,8 @@ for Nm = 1:4   % Loop through all four models
         end
     end
 
-    % Calculate means and covariances for all parameters from MH search results for
-    % each input. Excludes burn-in, which is estimated as 1/4 of total chain length.
+% Calculate means and covariances for all parameters from MH search results for
+% each input. Excludes burn-in, which is estimated as 1/4 of total chain length.
     for i = 1:length(Par)
         for j = 1:length(Par)
             for input_num = 1:3   % Loop through all three input signals
@@ -361,8 +358,8 @@ for Nm = 1:4   % Loop through all four models
         end
     end
 
-    % Generate diagonal matrix with all covariance results for each input. 
-    % Excludes burn-in, which is estimated as 1/4 of total chain length.
+% Generate diagonal matrix with all covariance results for each input. 
+% Excludes burn-in, which is estimated as 1/4 of total chain length.
     for input_num = 1:3  % Loop through all three input signals
         eval(['cov_all_fsp_M',num2str(Nm),'_I',num2str(input_num),...
             '_act = blkdiag(cov(Rslts_FSP_I',num2str(input_num),'(Nm).Par_Chain(floor(end/4):end,:)),0);']);
@@ -395,22 +392,22 @@ for Nm = 1:4  % Loop through all four models
 
     figure()
     for i = 1:length(Parameters)-1
-            for j = i+1:length(Parameters)
-                    subplot(7,7,(i-1)*7+j-1)
-                    scatter(Rslts_FSP_I1(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I1(Nm).Par_Chain(floor(end/4):end,i),10); hold on 
-                    scatter(Rslts_FSP_I2(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I2(Nm).Par_Chain(floor(end/4):end,i),10);
-                    scatter(Rslts_FSP_I3(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I3(Nm).Par_Chain(floor(end/4):end,i),10);
-                    plot(log10(abs(Parameters_True(j))),log10(abs(Parameters_True(i))),'o',...
-                        'markerfacecolor',[0.4,0.4,0.4],'MarkerEdgeColor',[0.3,0.3,0.3],'markersize',10);
-                    COL = 'b'; conf = 0.90; % For Input 1 ellipses: color and confidence interval
-                    [~,XX_1,YY_1] = error_ellipse_fill(RSLTS_FSP_I1(j,i).COV,RSLTS_FSP_I1(j,i).MN,'style',COL,'conf',conf);
-                    COL = 'g'; conf = 0.90; % For Input 2 ellipses: color and confidence interval
-                    [~,XX_2,YY_2] = error_ellipse_fill(RSLTS_FSP_I2(j,i).COV,RSLTS_FSP_I2(j,i).MN,'style',COL,'conf',conf);
-                    COL = 'r'; conf = 0.90; % For Input 3 ellipses: color and confidence interval
-                    [~,XX_3,YY_3] = error_ellipse_fill(RSLTS_FSP_I3(j,i).COV,RSLTS_FSP_I3(j,i).MN,'style',COL,'conf',conf);
-                    xlabel(sprintf('Par %i',j))
-                    ylabel(sprintf('Par %i',i))
-            end
+        for j = i+1:length(Parameters)
+            subplot(7,7,(i-1)*7+j-1)
+            scatter(Rslts_FSP_I1(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I1(Nm).Par_Chain(floor(end/4):end,i),10); hold on 
+            scatter(Rslts_FSP_I2(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I2(Nm).Par_Chain(floor(end/4):end,i),10);
+            scatter(Rslts_FSP_I3(Nm).Par_Chain(floor(end/4):end,j),Rslts_FSP_I3(Nm).Par_Chain(floor(end/4):end,i),10);
+            plot(log10(abs(Parameters_True(j))),log10(abs(Parameters_True(i))),'o',...
+                'markerfacecolor',[0.4,0.4,0.4],'MarkerEdgeColor',[0.3,0.3,0.3],'markersize',10);
+            COL = 'b'; conf = 0.90; % For Input 1 ellipses: color and confidence interval
+            [~,XX_1,YY_1] = error_ellipse_fill(RSLTS_FSP_I1(j,i).COV,RSLTS_FSP_I1(j,i).MN,'style',COL,'conf',conf);
+            COL = 'g'; conf = 0.90; % For Input 2 ellipses: color and confidence interval
+            [~,XX_2,YY_2] = error_ellipse_fill(RSLTS_FSP_I2(j,i).COV,RSLTS_FSP_I2(j,i).MN,'style',COL,'conf',conf);
+            COL = 'r'; conf = 0.90; % For Input 3 ellipses: color and confidence interval
+            [~,XX_3,YY_3] = error_ellipse_fill(RSLTS_FSP_I3(j,i).COV,RSLTS_FSP_I3(j,i).MN,'style',COL,'conf',conf);
+            xlabel(sprintf('Par %i',j))
+            ylabel(sprintf('Par %i',i))
+        end
     end
     suptitle('FSP Metropolis-Hastings Results: Scatter') % Label the set of scatter plots
 end
@@ -429,14 +426,30 @@ for Nm = 1:4
     legend([f1,f2,f3],{'Input 1','Input 2','Input3'},'FontSize',11,'Location','SouthEast') 
 end
 
-%% Task 5: Run FSP with Par Set 1 (from ODE MH), Par Set 2 (from ODE MH), and True Params For All Three Inputs 
-% Run FSP for all experiments (each with a different input signal) to
+%% Task 5/6: Identify/Label ODE and FSP Best Fit Params For All Three Inputs
+% Best fit parameters from ODE fitting, ODE MH search, and FSP MH search
+
+for Nm = 1:4  % Loop through all four models
+    for input_num = 1:3  % Loop through all three inputs
+    % Best parameters from ODE fitting using all 3 input signals
+        eval(['BestParams_ODE_M',num2str(Nm),'_I',num2str(input_num),' = log10(Model_Results_Parameters_I',num2str(input_num),'(Nm,:));']);
+    % Best parameters from ODE Met-Haste using all 3 input signals
+        eval(['[~,b',num2str(input_num),'] = max(Rslts_ODE_I',num2str(input_num),'(Nm).Fun_Chain);']); 
+        eval(['BestParams_ODE_MH_M',num2str(Nm),'_I',num2str(input_num),' = Rslts_ODE_I',num2str(input_num),'(Nm).Par_Chain(b',num2str(input_num),',:);']);
+    % Best parameters from FSP Met-Haste using all 3 input signals
+        eval(['[~,b',num2str(input_num),'] = max(Rslts_FSP_I',num2str(input_num),'(Nm).Fun_Chain);']); 
+        eval(['BestParams_FSP_M',num2str(Nm),'_I',num2str(input_num),' = Rslts_FSP_I',num2str(input_num),'(Nm).Par_Chain(b',num2str(input_num),',:);']);
+    end
+end
+
+%% Task 5: Run FSP with Par Set 1 and Par Set 2 (from ODE MH), Best Fit FSP Params, and True Params For All Three Inputs 
+% Run FSP for three experiments (each with a different input signal) to
 % obtain full mRNA distributions at the same time points as the data.  This
 % is done using both parameter sets obtained from the ODE MH search of
-% parameter space, along with the true parameters for comparison.
+% parameter space, along with the best fit FSP params and true parameters for comparison.
 
-for Nm = 2  % Loop through all four models
-    for input_num = 1 % Loop through all three input signals
+for Nm = 1:4  % Loop through all four models
+    for input_num = 1:3 % Loop through all three input signals
         eval(['Input = Input',num2str(input_num),';']);
     % FSP objective function to determine full mRNA distributions
         OBJ_FSP_MH_P = @(X)get_FSP_OBJ(10.^X,Input,Nm,Output_Times_data,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
@@ -451,19 +464,7 @@ for Nm = 2  % Loop through all four models
     end
 end
 
-%% Task 6: Predictions for Experimental Design - Identify/Label ODE and FSP Best Fit Params For All Three Inputs
-
-for Nm = 1:4  % Loop through all four models
-    for input_num = 1:3  % Loop through all three inputs
-    % Best Parameters from ODE Fitting Using All 3 Inputs
-        eval(['BestParams_ODE_M',num2str(Nm),'_I',num2str(input_num),' = log10(Model_Results_Parameters_I',num2str(input_num),'(Nm,:));'])
-    % Best Parameters from FSP Met-Haste Using All 3 Inputs
-        eval(['[~,b',num2str(input_num),'] = max(Rslts_FSP_I',num2str(input_num),'(Nm).Fun_Chain);']); 
-        eval(['BestParams_FSP_M',num2str(Nm),'_I',num2str(input_num),' = Rslts_FSP_I',num2str(input_num),'(Nm).Par_Chain(b',num2str(input_num),',:);']);
-    end
-end
-
-%% Task 6: Predictions for Experimental Design - ODE PLOTS - TWO NEW SINUSOIDAL INPUT SIGNALS - Best Fit Params For All Three Inputs
+%% Task 6: Predictions - ODE PLOTS - TWO NEW SINUSOIDAL INPUT SIGNALS - Best Fit Params For All Three Inputs
 % Plot mean mRNA (ODE solution) for two new sinusoidal input signals: 
 % One with a fast frequency (Input_P1) and one with a slow frequency (Input_P2) 
 % using parameters from ODE best fit and FSP best fit for all three inputs
@@ -524,16 +525,16 @@ legend({'M2:True Parameters','M2:I1:ODE','M2:I2:ODE','M2:I3:ODE','M2:I1:FSP','M2
     'FontSize',12,'Location',LOC); grid off;
 suptitle('Experimental Prediction of Mean mRNA Level: ODE Solution')
 
-%% Task 6: Predictions for Experimental Design - FSP PLOTS - FOUR NEW SINUSOIDAL INPUT SIGNALS - MULTIPLE MODELS - Best Fit Params For Input 1
+%% Task 6: Predictions - FSP PLOTS - FOUR NEW SINUSOIDAL INPUT SIGNALS - Best Fit Params For Input 1
 % Plot full distributions (FSP solution) for four new sinusoidal input signals 
-% using parameters from ODE best fit and FSP best fit for all three comparison inputs: 
+% using parameters from FSP best fit and true parameters for all three comparison inputs: 
 % Input_P1: fast frequency, Input_P2: slow frequency 
 % Input_P3 and Input_P4: mid-level frequencies  
 
 Output_Times_expt = linspace(0,100,11);
 Input_P1 = @(t)(1-cos(2*pi/10*t))*(t>5)*(t<70);   % Prediction Input signal 1 (fast)
 Input_P2 = @(t)(1-cos(2*pi/60*t))*(t>5)*(t<70);   % Prediction Input signal 2 (slow)
-Input_P3 = @(t)(1-cos(2*pi/20*t))*(t>5)*(t<70);   % Prediction Input signal 3 (mid)
+Input_P3 = @(t)(1-cos(2*pi/20*t))*(t>5)*(t<70);   % Prediction Input signal 3 (mid/fast)
 Input_P4 = @(t)(1-cos(2*pi/50*t))*(t>5)*(t<70);   % Prediction Input signal 4 (mid/slow)
 
 for Nm = 1:4  % Loop through all four models
@@ -628,9 +629,9 @@ ylabel('Probability','FontWeight','bold','FontSize',14) %Adding label to y axis
 suptitle({'Distribution Predictions for New Sinusoidal Input Signal at Different Times',...
     '(Top Row) Mid-Fast Frequency (Bottom Row) Mid-Slow Frequency'}) %Label the set of scatter plots
 
-%% Task 6: Predictions for Experimental Design - FSP PLOTS - MANY DIFFERENT INPUT SIGNALS - MULTIPLE MODELS - Best Fit Params For All Three Inputs
+%% Task 6: Predictions - FSP PLOTS - MANY DIFFERENT INPUT SIGNALS - Best Fit Params For All Three Inputs
 % Plot full distributions (FSP solution) for all four models and for many different sinusoidal input signals, 
-% each with a different frequency, using parameters from FSP best fit for all three inputs
+% each with a different frequency, using parameters from FSP best fit and true parameters for all three inputs
 
 Output_Times_expt = linspace(0,100,11);
 for pd = [5:5:65]  % Loop through multiple different frequencies for comparison
@@ -662,17 +663,9 @@ end
         plot([0:XLIM], P_RNA_EXPT_M2_I1(i+1,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
         plot([0:XLIM], P_RNA_EXPT_M3_I1(i+1,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
         plot([0:XLIM], P_RNA_EXPT_M4_I1(i+1,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);        
-%         plot([0:XLIM], P_RNA_EXPT_M2_I2(i+1,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
-%         plot([0:XLIM], P_RNA_EXPT_M3_I2(i+1,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
-%         plot([0:XLIM], P_RNA_EXPT_M4_I2(i+1,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
-%         plot([0:XLIM], P_RNA_EXPT_M2_I3(i+1,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
-%         plot([0:XLIM], P_RNA_EXPT_M3_I3(i+1,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
-%         plot([0:XLIM], P_RNA_EXPT_M4_I3(i+1,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
         set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
-        title(sprintf('t = %i min',round(Output_Times_expt(i+1))))
         legend({'M2:TP','M1:I1:FSP','M2:I1:FSP','M3:I1:FSP','M4:I1:FSP'},'FontSize',9,'Location',LOC)
-%         legend({'M2:TP','M2:I2:FSP','M3:I2:FSP','M4:I2:FSP'},'FontSize',9,'Location',LOC)
-%         legend({'M2:TP','M2:I3:FSP','M3:I3:FSP','M4:I3:FSP'},'FontSize',9,'Location',LOC)
+        title(sprintf('t = %i min',round(Output_Times_expt(i+1))))
     end
     subplot(2,5,1)
     ylabel('Probability','FontWeight','bold','FontSize',14) % Adding label to y axis
@@ -683,25 +676,25 @@ end
 end
 % total_diff(pd/5) = sum(std(EXP_Var))
 
-%% Task 6: Predictions for Experimental Design - FSP PLOTS - INPUT 2/3/4 - MULTIPLE MODELS - Best Fit Params For Input 1 
-% Plot full distributions (FSP solution) for input 2 (step) and input 3
-% (ramp) using parameters from FSP best fit for input signal 1 (true input)
+%% Task 6: Predictions for Figure 11 - FSP PLOTS - INPUT 2/3/4 - Best Fit Params For Input 1 
+% Predict full distributions (FSP solution) for three experiments: step, ramp, and fast sinusoidal
+% using parameters from FSP best fit for input signal 1 (true input)
 
 Output_Times_expt = linspace(0,100,11);
-Input_Exp_1 = Input2;   % Input signal 2 (step)
-Input_Exp_2 = Input3;   % Input signal 3 (ramp)
+Input_Exp_1 = Input2;   % Prediction Input signal 2 (step)
+Input_Exp_2 = Input3;   % Prediction Input signal 3 (ramp)
 Input_Exp_3 = @(t)(1-cos(2*pi/10*t))*(t>5)*(t<70);   % Prediction Input signal 4 (fast) 
     
 for Nm = 1:4 % Loop through all four models
-% Run FSP with Input Signal 2 and Input Signal 3 and true parameters
+% Predict FSP distributions for experiments 1-3 using true parameters
     OBJ_FSP_MH_P_1 = @(X)get_FSP_OBJ(10.^X,Input_Exp_1,Nm,Output_Times_expt,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
     OBJ_FSP_MH_P_2 = @(X)get_FSP_OBJ(10.^X,Input_Exp_2,Nm,Output_Times_expt,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
     OBJ_FSP_MH_P_3 = @(X)get_FSP_OBJ(10.^X,Input_Exp_3,Nm,Output_Times_expt,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
     eval(['P_EXPT_true_M',num2str(Nm),'_1 = OBJ_FSP_MH_P_1(log10(abs(Parameters_True)));']);
     eval(['P_EXPT_true_M',num2str(Nm),'_2 = OBJ_FSP_MH_P_2(log10(abs(Parameters_True)));']);
     eval(['P_EXPT_true_M',num2str(Nm),'_3 = OBJ_FSP_MH_P_3(log10(abs(Parameters_True)));']);
-% FSP for Predictions Using Input Signal 2 and Input Signal 3
-    for input_num = 1 % Loop through FSP best fit parameters from all three original input signals 
+% Predict FSP distributions for experiments 1-3 using FSP best fit parameters
+    for input_num = 1 % Using FSP best fit parameters from original experiment with input signal 1
         OBJ_FSP_MH_P_1 = @(X)get_FSP_OBJ(10.^X,Input_Exp_1,Nm,Output_Times_expt,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
         eval(['P_RNA_EXPT_M',num2str(Nm),'_I',num2str(input_num),'_1 = OBJ_FSP_MH_P_1(BestParams_FSP_M',num2str(Nm),'_I',num2str(input_num),');']);
         OBJ_FSP_MH_P_2 = @(X)get_FSP_OBJ(10.^X,Input_Exp_2,Nm,Output_Times_expt,Data_Set_Hists,Mats_A,N,N_states,'P_RNA');
@@ -756,7 +749,7 @@ end
     [ax1,h1]=suplabel('mRNA Level','x',[0.09 0.09 0.84 0.84]); set(h1,'FontWeight','bold','FontSize',14) 
     suptitle('Ramp Input Signal') % Label the set of scatter plots
     
-    % PLOT FSP RESULTS USING INPUT 4
+% PLOT FSP RESULTS USING INPUT 4
     figure()
     for i = 2:11
         subplot(2,5,(i-1))
@@ -776,9 +769,10 @@ end
     [ax1,h1]=suplabel('mRNA Level','x',[0.09 0.09 0.84 0.84]); set(h1,'FontWeight','bold','FontSize',14) 
     suptitle('Sinusoidal (Fast) Input Signal') % Label the set of scatter plots
 
-%% FIGURES FOR CHAPTER: Figure 2: ODE SOLUTION - TWO ARBITRARY PARAMETER SETS FOR INPUT 1 AND MODEL 2 - UPDATE DESCRIPTION
+%% FIGURES FOR CHAPTER: Figure 2: ODE SOLUTION - TWO ARBITRARY PARAMETER SETS FOR INPUT 1 AND MODEL 2
+% Plot input signal 1 and ODE solution for average mRNA count for two arbitrary parameter sets
 figure()
-time = [0 100]; xval = Output_Times_data; 
+time = [0 100]; xval = Output_Times_data; % For plotting input signal
 Nm = 2;  % Model Number
 
 % Plot Input Signal 1: Sinusoidal
@@ -794,7 +788,7 @@ xlabel('Time (min)','FontWeight','bold','FontSize',12);
 ylabel('Y_{1}(t)','FontWeight','bold','FontSize',12)
 title('Input Signal 1: Sinusoidal','FontWeight','bold','FontSize',12)
 
-
+% Plot ODE solution for average mRNA count for two arbitary parameter sets
 subplot(2,1,2)
 yval = [0 15];
 for i=1:length(xval)
@@ -802,51 +796,46 @@ for i=1:length(xval)
         'LineWidth',1,'Color',[0.3,0.3,0.3]);hold on
 end
 Output_Times = linspace(0,100,100);  % Vector with output times specified
-Parameters_A = [3, -0.4, 2.5, 1, 9, 2, 1, 0.8]; % Arbitrary set of parameters 
-[M] = odefun(abs(Parameters_A),Nm,Input1,Output_Times,x0); % Solve ODEs for mean mRNA
-m1=plot(Output_Times,M,'Color',[0.2,0.2,0.2],'linewidth',2); hold on % Plot ODE soln for 1st parameter set
-Parameters_B = [1, -0.6, 1, 0.2, 5, 2, 1, 0.2];  % Arbitrary set of parameters
-[M] = odefun(abs(Parameters_B),Nm,Input1,Output_Times,x0); % Solve ODEs for mean mRNA
-m2=plot(Output_Times,M,'Color',[0.8,0.8,0.8],'linewidth',2) % Plot ODE soln for 2nd parameter set on same plot
-legend([m1,m2],{'Parameter Set A', 'Parameter Set B'},'FontSize',12, 'Location', 'SouthEast'); 
-title('Mean mRNA Level: ODE Solution','FontSize',12) 
+Parameters_A = [3, -0.4, 2.5, 1, 9, 2, 1, 0.8]; % Arbitrary set of parameters (A)
+Parameters_B = [1, -0.6, 1, 0.2, 5, 2, 1, 0.2];  % Arbitrary set of parameters (B)
+[M_A] = odefun(abs(Parameters_A),Nm,Input1,Output_Times,x0); % Solve ODEs for mean mRNA
+[M_B] = odefun(abs(Parameters_B),Nm,Input1,Output_Times,x0); % Solve ODEs for mean mRNA
+m1=plot(Output_Times,M_A,'Color',[0.2,0.2,0.2],'linewidth',2); hold on % Plot ODE soln for 1st parameter set
+m2=plot(Output_Times,M_B,'Color',[0.8,0.8,0.8],'linewidth',2) % Plot ODE soln for 2nd parameter set on same plot
+legend([m1,m2],{'Parameter Set A', 'Parameter Set B'},'FontSize',12, 'Location', 'SouthEast');  
 xlabel('Time (min)', 'FontWeight','bold','FontSize',12) 
-ylabel('Average mRNA Count','FontWeight','bold','FontSize',12) 
+ylabel('Average mRNA Count','FontWeight','bold','FontSize',12)
+title('Mean mRNA Level: ODE Solution','FontSize',12)
 
 %% FIGURES FOR CHAPTER: Figure 3: ODE FITTING RESULTS FOR MODEL 2
 % Includes two sets of error bars: large (light) error bars are std dev 
 % of the data, small (dark) error bars are standard error of the mean
 % Black astericks indicate the mean of the data
 
-% Model and input can be adjusted once fitting is performed for all four
-% models and all three input signals.
-Nm = 2; 
-Input = Input1;
+Nm = 2; Input = Input1; % Model and input can be changed.
+Output_Times = linspace(0,100,100);  % Vector with output times specified
 
 figure()
-Output_Times = linspace(0,100,100);  % Vector with output times specified
-% Plot ODE fitting using Best Parameters: Input 1
-MVT_test =  odefun(Model_Results_Parameters_I1(Nm,:),Nm,Input,Output_Times,x0);  
-mvt=plot(Output_Times,MVT_test,'Color',[0.7,0.7,0.7],'linewidth',2); hold on
+% Plot ODE fitting using Best Fit Parameters: Input 1
+MVT_test = odefun(Model_Results_Parameters_I1(Nm,:),Nm,Input,Output_Times,x0);  
+mvt = plot(Output_Times,MVT_test,'Color',[0.7,0.7,0.7],'linewidth',2); hold on
 % Plot error bars for standard deviations and standard error
 err = std(Data_Set)./sqrt(length(Data_Set)); % Standard error of the mean of the data
-e1=errorbar(Output_Times_data,mean(Data_Set),std(Data_Set),'Color',[0.7,0.7,0.7],'linewidth',0.8,'linestyle','none');
-e2=errorbar(Output_Times_data,mean(Data_Set),err,'Color',[0.3,0.3,0.3],'linewidth',1.5,'linestyle','none');
-% Plot mean of data
-mvt2 = scatter(Output_Times_data,mean(Data_Set),'k','*');
-set(gca,'xlim',[Output_Times(1),Output_Times(end)])
+e1 = errorbar(Output_Times_data,mean(Data_Set),std(Data_Set),'Color',[0.7,0.7,0.7],'linewidth',0.8,'linestyle','none');
+e2 = errorbar(Output_Times_data,mean(Data_Set),err,'Color',[0.3,0.3,0.3],'linewidth',1.5,'linestyle','none');
+mvt2 = scatter(Output_Times_data,mean(Data_Set),'k','*'); % Plot mean of data
+set(gca,'xlim',[Output_Times(1),Output_Times(end)]);
+legend([e1,e2],{'Mean(data) \pm Std Deviation (light)','Mean(data) \pm Std Error (dark)'},'FontSize',12,'Location','SouthEast');
 xlabel('Time (min)','FontWeight','bold','FontSize',14)
 ylabel('Average mRNA Count','FontWeight','bold','FontSize',14)
 title('Parameter Optimization (ODE Fitting)','FontWeight','bold','FontSize',14)
-legend([e1,e2],{'Mean(data) \pm Std Deviation (light)', 'Mean(data) \pm Std Error (dark)'},...
-    'FontSize',12,'Location','SouthEast');
 
 %% FIGURES FOR CHAPTER: Figure 4: ODE MET-HASTE RESULTS FOR INPUT 1 AND MODEL 2
+% Excluding burn-in period (estimated to be 1/4 of total chain length)
 
 Nm = 2;  % Model Number
 figure()
-% Plot ODE MH scatter plot with 90% confidence ellipse
-subplot(1,2,1)
+subplot(1,2,1)  % Plot ODE MH scatter plot with 90% confidence ellipse
 % Make a scatter plot of Par5 vs. Par8
 mh1=scatter(I1_ODE_M2_Par5(floor(end/4):end),I1_ODE_M2_Par8(floor(end/4):end),10,...
     'MarkerEdgeColor',[0.7,0.7,0.7]); hold on 
@@ -863,12 +852,13 @@ mh3=plot(Par_set_2(5),Par_set_2(8),'k+','markersize',12,'linewidth',4); hold on
 % Plot of true parameter values for parameters 5 and 8
 mh4=plot(log10(abs(Parameters_True(5))),log10(abs(Parameters_True(8))),'o',...   
     'markerfacecolor',[0.4,0.4,0.4],'MarkerEdgeColor',[0.3,0.3,0.3],'markersize',12);
-xlabel('\it\bf log_{10}k_{r2}','FontWeight','bold','FontSize',16); 
-ylabel('\bf log_{10}\gamma','FontWeight','bold','FontSize',16)
 set(gca,'position',[0.11, 0.16905, 0.33466, 0.68843])
-title('Parameter Uncertainty','FontWeight','bold','FontSize',12)
 legend([mh1,mh2,mh3,mh4],{'ODE','Parameter Set 1','Parameter Set 2','True Parameters'},...
     'FontSize',11,'Location','SouthEast')
+xlabel('\it\bf log_{10}k_{r2}','FontWeight','bold','FontSize',16); 
+ylabel('\bf log_{10}\gamma','FontWeight','bold','FontSize',16)
+title('Parameter Uncertainty','FontWeight','bold','FontSize',12)
+
 
 % Plot normalized covariances for ODE MH search for all parameter combinations 
 subplot(1,2,2)
@@ -881,7 +871,7 @@ set(gca,'xtick',[1.5:1:8.5],'xticklabel',{'\it\bf k_{12}','\it\bf k_{23}',...
 set(gca,'ytick',[1.5:1:8.5],'yticklabel',{'\it\bf k_{12}','\it\bf k_{23}',...
     '\it\bf k_{21}','\it\bf k_{32}','\it\bf k_{r2}','\it\bf k_{r3}','\bf\beta','\bf\gamma'},...
     'FontSize',14)
-title('Covariance Comparison','FontWeight','bold','FontSize',12)
+title('Covariance Comparison: ODE','FontWeight','bold','FontSize',12)
 colorbar
 for i=1:8
     text(i+.45,i+.45,'+','FontSize',14)
@@ -900,30 +890,25 @@ for i=1:8
         end       
     end
 end
+suptitle('ODE Metropolis-Hastings Results') % Label the set of scatter plots
 
-% suptitle('ODE Metropolis-Hastings Results') % Label the set of scatter plots
+%% FIGURES FOR CHAPTER: Figure 5: SSA RESULTS USING MULTIPLE PARAMETERS SETS, INPUT 1, AND MODEL 2
 
-%% FIGURES FOR CHAPTER: Figure 5: SSA RESULTS USING MULTIPLE PARAMETERS SETS, INPUT 1, AND MODEL 2 - UPDATE DESCRIPTION
-
-Nm = 2; % Model Number
+Nm = 2; Input = Input1; % Model and Input Signal
 Output_Times = linspace(0,100,100);  % Vector with output times
 
+figure()
 % Plot single SSA trajectory using ODE best fit parameters
-f1=figure();
-subplot(1,3,1)
+subplot(1,3,1) 
 plot(Output_Times,m_RNA_Array_T1_I1(820,:),'Color',[0,0,0],'linewidth',1.5);
 set(gca,'xlim',[Output_Times(1),Output_Times(end)],'ylim',[0 22])
 title('Single SSA Trajectory', 'FontWeight','bold','FontSize',13) 
 xlabel('Time (min)','FontWeight','bold','FontSize',13) 
 ylabel('Average mRNA Count','FontWeight','bold','FontSize',13) 
 
-% Plot SSA trajectories for ODE best fit parameters, parameter set 1 (from
-% ODE MH), and parameter set 2 (from ODE MH)
+% Plot mean mRNA from multiple runs of many SSA trajectories using ODE best
+% fit parameters compared to ODE solution for mean mRNA
 subplot(1,3,2)
-err = std(m_RNA_Array_T1_I1)./sqrt(length(m_RNA_Array_T1_I1));
-% Shaded region indicates one standard deviation of SSA trajectories using ODE best fit parameters
-% ha = shadedplot(Output_Times,mean(m_RNA_Array)-std(m_RNA_Array),...
-%     mean(m_RNA_Array)+std(m_RNA_Array),[0.9,0.9,0.9],[0.8,0.8,0.8]);hold on
 % Plot mean mRNA from ODE solution using ODE best fit parameters
 MVT_test =  odefun(Model_Results_Parameters_I1(Nm,:),Nm,Input,Output_Times,x0);
 h1=plot(Output_Times,MVT_test,'Color',[0.1,0.1,0.1],'linewidth',3); hold on
@@ -931,45 +916,41 @@ h1=plot(Output_Times,MVT_test,'Color',[0.1,0.1,0.1],'linewidth',3); hold on
 h2=plot(Output_Times,mean(m_RNA_Array_T1_I1),':','Color',[0.1,0.1,0.1],'linewidth',2); 
 h3=plot(Output_Times,mean(m_RNA_Array_T2_I1),':','Color',[0.3,0.3,0.3],'linewidth',2);
 h4=plot(Output_Times,mean(m_RNA_Array_T3_I1),':','Color',[0.5,0.5,0.5],'linewidth',2); 
-h5=plot(Output_Times,mean(m_RNA_Array_T4_I1),':','Color',[0.7,0.7,0.7],'linewidth',2); 
-% h6=plot(Output_Times,mean(m_RNA_Array_T4),':','Color',[0.85,0.85,0.85],'linewidth',2.5); 
-% Plot the data set mean at each time point
-h7=plot(Output_Times_data,mean(Data_Set),'o','Color',[0.1,0.1,0.1],'linewidth',1.5);
+h5=plot(Output_Times,mean(m_RNA_Array_T4_I1),':','Color',[0.7,0.7,0.7],'linewidth',2);  
+% Plot the mean of the data at each time point
+h6=plot(Output_Times_data,mean(Data_Set),'o','Color',[0.1,0.1,0.1],'linewidth',1.5);
 title('1000 SSA Trajectories','FontWeight','bold','FontSize',13) 
 xlabel('Time (min)','FontWeight','bold','FontSize',13) 
 ylabel('Average mRNA Count','FontWeight','bold','FontSize',13) %
 set(gca,'xlim',[Output_Times(1),Output_Times(end)],'ylim',[0 14])
-legend([h1,h2,h3,h4,h5,h7],{'ODE: Best Fit','SSA 1','SSA 2',...
+legend([h1,h2,h3,h4,h5,h6],{'ODE: Best Fit','SSA 1','SSA 2',...
     'SSA 3','SSA 4','Data'},'FontSize',11,'Location','SouthEast') 
 
-% Plot SSA distributions for the two ODE MH parameter sets at a specific
-% time point along with FSP distributions at the same time point, along
-% with FSP distribution at the same time point using the true parameter set
+% Plot data distribution at a specific time point along with FSP distributions
+% at the same time point, along with FSP distribution at the same time point
+% using the true parameter set
 subplot(1,3,3)
-% SSA Distributions at a specific time point
+% Data Distribution at a specific time point
 [Hb1] = histogram(Data_Set(1:end,5),'Normalization','probability','FaceColor',[0.6,0.6,0.6]); hold on 
 bins1 = Hb1.BinEdges+(0.5*Hb1.BinWidth); hvalb1 = Hb1.Values;
-% h1=histogram(m_RNA_Array1(:,60),bins1,'Normalization','probability','FaceColor',[0.4,0.4,0.4]); hold on
-% h2=histogram(m_RNA_Array2(:,60),bins1,'Normalization','probability','FaceColor',[0.9,0.9,0.9]);
-% FSP Distributions at the same time point as SSA distributions
+% FSP Distributions at the same time point as data distribution
 OBJ_FSP_MH_P = @(X)get_FSP_OBJ(10.^X,Input,Nm,Output_Times,zeros(100,50),Mats_A,N,N_states,'P_RNA');
-P_RNA_1=OBJ_FSP_MH_P(Par_set_1);
-fsp1=plot([0:30],P_RNA_1(44,1:31),'Color',[0.1,0.1,0.1],'linewidth',3);
-P_RNA_2=OBJ_FSP_MH_P(Par_set_2);
-fsp2=plot([0:30],P_RNA_2(44,1:31),'Color',[0.4,0.4,0.4],'linewidth',3);
-P_RNA_t=OBJ_FSP_MH_P(log10(abs(Parameters_True)));
-fsp_t=plot([0:30],P_RNA_t(44,1:31),'k:','linewidth',3);
-set(gca,'ylim',[0 0.15],'xlim',[0 30])
-title('Distributions (t=44 min)','FontWeight','bold','FontSize',13) 
-xlabel('mRNA Level','FontWeight','bold','FontSize',13) 
-ylabel('Probability','FontWeight','bold','FontSize',13) 
+P_RNA_1 = OBJ_FSP_MH_P(Par_set_1);
+fsp1 = plot([0:30],P_RNA_1(44,1:31),'Color',[0.1,0.1,0.1],'linewidth',3);
+P_RNA_2 = OBJ_FSP_MH_P(Par_set_2);
+fsp2 = plot([0:30],P_RNA_2(44,1:31),'Color',[0.4,0.4,0.4],'linewidth',3);
+P_RNA_t = OBJ_FSP_MH_P(log10(abs(Parameters_True)));
+fsp_t = plot([0:30],P_RNA_t(44,1:31),'k:','linewidth',3);
+set(gca,'ylim',[0 0.15],'xlim',[0 30]);
 legend([Hb1,fsp1,fsp2,fsp_t],{'Data','FSP: Par Set 1','FSP: Par Set 2','FSP: True Params'},...
     'FontSize',10,'Location','NorthEast') 
-
-% suptitle('SSA Results') % Label the set of scatter plots
+xlabel('mRNA Level','FontWeight','bold','FontSize',13) 
+ylabel('Probability','FontWeight','bold','FontSize',13)
+title('Distributions (t=44 min)','FontWeight','bold','FontSize',13) 
+suptitle('SSA Results') % Label the set of scatter plots
 
 %% FIGURES FOR CHAPTER: Figure 6: DATA DISTRIBUTIONS COMPARED TO FSP DISTRIBUTIONS
-% Plot data distributions compared to full fsp distributions using best fit
+% Plot data distributions compared to full fsp distributions using FSP best fit
 % parameters from model 2 and input signal 1 (at 5 time points)
 
 figure()
@@ -1014,11 +995,12 @@ set(h1,'FontWeight','bold','FontSize',14)
 % suptitle('Data Distributions at Different Times') % Label the set of scatter plots
 
 %% FIGURES FOR CHAPTER: Figure 7: FSP MET-HASTE RESULTS FOR INPUT 1 AND MODEL 2
+% Excluding burn-in period (estimated to be 1/4 of total chain length)
 
 % Plot ODE and FSP MH scatter plots with 90% confidence ellipses
-figure(); subplot(1,3,1)
+figure()
+subplot(1,3,1)
 % Make a scatter plot of Par5 vs. Par8 for ODE and/or FSP MH searches
-% s1=scatter(I1_ODE_M2_Par5(floor(end/4):end),I1_ODE_M2_Par8(floor(end/4):end),10,'MarkerEdgeColor',[0.8,0.8,0.8]);hold on 
 s2=scatter(I1_FSP_M2_Par5(floor(end/4):end),I1_FSP_M2_Par8(floor(end/4):end),10,'MarkerEdgeColor',[0.5,0.5,0.5]);hold on 
 % Plot parameter set 1 from ODE MH
 plot(Par_set_1(5),Par_set_1(8),'wx','markersize',12,'linewidth',8); hold on
@@ -1029,8 +1011,6 @@ s4=plot(Par_set_2(5),Par_set_2(8),'k+','markersize',12,'linewidth',4); hold on
 % Plot of true parameter values for parameters 5 and 8
 s5=plot(log10(abs(Parameters_True(5))),log10(abs(Parameters_True(8))),'o',...
     'markerfacecolor',[0.1,0.1,0.1],'MarkerEdgeColor',[0.1,0.1,0.1],'markersize',12);
-% COL = 'k'; conf = 0.90; % For ODE ellipses: color and confidence interval
-% [~,XX,YY] = error_ellipse_fill(RSLTS_ODE_M2_I1(5,8).COV,RSLTS_ODE_M2_I1(5,8).MN,'style',COL,'conf',conf);  % Call routine to plots ellipses for the 90% confidense intervals.
 COL = 'k'; conf = 0.90; % For FSP ellipses: color and confidence interval
 [~,XX_FSP,YY_FSP] = error_ellipse_fill(RSLTS_FSP_M2_I1(5,8).COV,RSLTS_FSP_M2_I1(5,8).MN,'style',COL,'conf',conf);  % Call routine to plots ellipses for the 90% confidense intervals.
 xlabel('\it\bf  log_{10}k_{r2}','FontWeight','bold','FontSize',16); 
@@ -1038,8 +1018,6 @@ ylabel('\bf log_{10}\gamma','FontWeight','bold','FontSize',16)
 title('Parameter Uncertainty','FontWeight','bold','FontSize',12)
 legend([s2,s3,s4,s5],{'FSP','Parameter Set 1','Parameter Set 2','True Parameters'},...
     'FontSize',11,'Location','SouthEast')
-% legend([s1,s2,s3,s4,s5],{'ODE','FSP','Parameter Set 1','Parameter Set 2','True Parameters'},...
-%     'FontSize',11,'Location','SouthEast')
 
 % Plot normalized covariances for ODE MH search for all parameter combinations 
 subplot(1,3,2)
@@ -1099,14 +1077,12 @@ for i=1:8
         end       
     end
 end
-
-% suptitle('Comparison between ODE and FSP Metropolis-Hastings Results') % Label the set of scatter plots
+suptitle('Comparison between ODE and FSP Metropolis-Hastings Results') % Label the set of scatter plots
 
 %% FIGURES FOR CHAPTER: Figure 8: BAR PLOT COMPARING PARAMETER RESULTS FROM ODE AND FSP MET-HASTE SEARCHES
 % Excluding burn-in period (estimated to be 1/4 of total chain length)
 
-%Specify Model Number
-Nm = 2;
+Nm = 2; %Specify Model Number
 % Bar plot of true parameter values
 TRUEPAR = abs([Parameters_True]);
 % Bar plot of mean FSP parameter values (from MH search)
@@ -1166,8 +1142,8 @@ title('Parameter Uncertainty','FontWeight','bold','FontSize',12)
 legend([h1,h2,h3,mh2],{'ODE:Input 1','ODE:Input 2','ODE:Input 3','True Parameters'},...
     'FontSize',10,'Location','SouthEast')
 
-time = [0 100];
-xval = Output_Times_data; yval = [0 3];
+% For plotting input signals
+time = [0 100]; xval = Output_Times_data; yval = [0 3];
 
 % Plot Input Signal 1: Sinusoidal
 subplot(2,4,2)
@@ -1289,8 +1265,7 @@ for i=1:8
         end       
     end
 end
-
-% suptitle('ODE Metropolis-Hastings Results: 3 Different Inputs') % Label the set of scatter plots
+suptitle('ODE Metropolis-Hastings Results: 3 Different Inputs') % Label the set of scatter plots
 
 %% FIGURES FOR CHAPTER: Figure 10: FSP MET-HASTE RESULTS - ALL THREE INPUT SIGNALS (Sinusoidal, Step, Ramp)
 
@@ -1318,8 +1293,8 @@ title('Parameter Uncertainty','FontWeight','bold','FontSize',12)
 legend([h1_fsp,h2_fsp,h3_fsp,s3],{'FSP:Input1','FSP:Input2','FSP:Input3','True Parameters'},...
     'FontSize',10,'Location','SouthEast')
 
-time = [0 100];
-xval = Output_Times_data; yval = [0 3];
+% For plotting input signals
+time = [0 100]; xval = Output_Times_data; yval = [0 3];
 
 % Plot Input Signal 1: Sinusoidal
 subplot(2,4,2)
@@ -1441,16 +1416,15 @@ for i=1:8
         end       
     end
 end
-
-% suptitle('FSP Metropolis-Hastings Results: 3 Different Inputs') % Label the set of scatter plots
+suptitle('FSP Metropolis-Hastings Results: 3 Different Inputs') % Label the set of scatter plots
 
 %% FIGURES FOR CHAPTER: Figure 11: Predictions - Multiple Time / Input Comparisons
 % Plot predictions for multiple different experiments (different input
 % signals) at different times using the best parameters from the FSP
 % Metropolis-Hastings search of parameter space using input 1 
 
-time = [0,100];  %Output time range
-xval = Output_Times_expt; yval = [0 3]; 
+% For plotting input signals
+time = [0,100]; xval = Output_Times_expt; yval = [0 3]; 
 
 figure()
 % Plot Input Signal 2: Step
@@ -1475,7 +1449,7 @@ xlabel('Time (min)','FontWeight','bold','FontSize',11);
 ylabel('Y_{3}(t)','FontWeight','bold','FontSize',11)
 title('Input Signal 3: Ramp','FontWeight','bold','FontSize',12)
 
-% Plot Input Signal: Sinusoidal (Fast Frequency)
+% Plot Input Signal 4: Sinusoidal (Fast Frequency)
 subplot(3,3,3)
 for i=1:length(xval)
     line([xval(i),xval(i)],[yval(1),yval(2)],'LineStyle',':','Color',[0.5,0.5,0.5]);hold on
@@ -1491,78 +1465,65 @@ COL_TRUE = 'k'; COL1 = [0.2,0.2,0.2]; COL2 = [0.4,0.4,0.4]; COL3 = [0.6,0.6,0.6]
 STYLE_TRUE = '-'; STYLE1 = '-'; STYLE2 = '-'; STYLE3 = '-'; STYLE4 = '-';
 LOC = 'NorthEast'; XLIM = 40; LIN = 1.5; LEG_SZ = 11;
 
-% Plots of FSP results, comparing prediction using true parameters and 
-% true model to predictions models 1-4 using best parameters from MH search (with input signal 1)
+% Compare predictions for models 1-4 using FSP best fit parameters from MH search (with input signal 1)
 % Predictions using input signal 2 (step)
 subplot(3,3,4)
-% plot([0:XLIM], P_EXPT_true_M2_1(4,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_1(4,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_1(4,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_1(4,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_1(4,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(4))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
  
 % Predictions using input signal 3 (ramp)
 subplot(3,3,5)
-% plot([0:XLIM], P_EXPT_true_M2_2(4,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_2(4,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_2(4,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_2(4,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_2(4,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(4))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
 
 % Predictions using sinusoidal input signal (with fast frequency)
 subplot(3,3,6)
-% plot([0:XLIM], P_EXPT_true_M2_3(4,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_3(4,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_3(4,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_3(4,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_3(4,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(4))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
 
 % Predictions using input signal 2 (step)
 subplot(3,3,7)
-% plot([0:XLIM], P_EXPT_true_M2_1(11,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_1(11,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_1(11,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_1(11,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_1(11,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(11))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
 
 % Predictions using input signal 3 (ramp)
 subplot(3,3,8)
-% plot([0:XLIM], P_EXPT_true_M2_2(11,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_2(11,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_2(11,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_2(11,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_2(11,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(11))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
 
 % Predictions using sinusoidal input signal (with fast frequency)
 subplot(3,3,9)
-% plot([0:XLIM], P_EXPT_true_M2_3(11,1:(XLIM+1)),'Color',COL_TRUE,'linewidth',LIN,'LineStyle',STYLE_TRUE);hold on;
 plot([0:XLIM], P_RNA_EXPT_M1_I1_3(11,1:(XLIM+1)),'Color',COL1,'linewidth',LIN,'LineStyle',STYLE1); hold on
 plot([0:XLIM], P_RNA_EXPT_M2_I1_3(11,1:(XLIM+1)),'Color',COL2,'linewidth',LIN,'LineStyle',STYLE2);
 plot([0:XLIM], P_RNA_EXPT_M3_I1_3(11,1:(XLIM+1)),'Color',COL3,'linewidth',LIN,'LineStyle',STYLE3);
 plot([0:XLIM], P_RNA_EXPT_M4_I1_3(11,1:(XLIM+1)),'Color',COL4,'linewidth',LIN,'LineStyle',STYLE4);
 set(gca,'xlim',[0,XLIM],'ylim',[0,0.15])
 title(sprintf('t = %i min',round(Output_Times_expt(11))),'FontWeight','bold','FontSize',12)
-% legend({'Model 2:TP','Model 1','Model 2','Model 3','Model 4'},'FontSize',9,'Location',LOC)
 legend({'Model 1','Model 2','Model 3','Model 4'},'FontSize',LEG_SZ,'Location',LOC)
 
 % Predictions using sinusoidal input signal (with slow frequency)
@@ -1571,6 +1532,5 @@ ylabel('Probability','FontWeight','bold','FontSize',14) %Adding label to y axis
 subplot(3,3,7) 
 ylabel('Probability','FontWeight','bold','FontSize',14) %Adding label to y axis
 [ax1,h1]=suplabel('mRNA Level','x',[0.09 0.09 0.84 0.84]); set(h1,'FontWeight','bold','FontSize',14) 
-% suptitle({'Distribution Predictions Using FSP Best Fit Parameters (from Input 1)'}) %Label the set of scatter plots
-
+suptitle({'Distribution Predictions Using FSP Best Fit Parameters (from Input 1)'}) %Label the set of scatter plots
 

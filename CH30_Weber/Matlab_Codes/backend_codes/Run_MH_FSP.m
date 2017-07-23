@@ -42,7 +42,7 @@ for ipart = 1:10
 end
 
 %% Perform the MH Search and Generate the Results 
-STR_FSP_MH = ['generated_results\MetHast_',num2str(Nm),'_FSP_Results_I',num2str(input_num),'.csv'];  
+STR_FSP_MH = ['generated_results/MetHast_',num2str(Nm),'_FSP_Results_I',num2str(input_num),'.csv'];  
 fid = fopen(STR_FSP_MH,'w');
 figure();
 for ipart = 1:Npart_FSP
